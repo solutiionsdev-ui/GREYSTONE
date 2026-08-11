@@ -10,6 +10,18 @@ This is a human-curated log — not a mirror of `git log`.
 
 ## 2026-08-11
 
+- **The Windows toolchain was unusable, twice over.** `next dev` failed with
+  `'next' is not recognized` — two independent causes. First, `node_modules` had
+  been installed on **macOS** and carried onto this Windows machine through
+  Drive: it shipped `@next/swc-darwin-arm64` (no `swc-win32-x64-msvc`) and 19
+  Unix shims in `.bin/` with **zero** `.cmd` wrappers, so npm could never resolve
+  the binary. Second, the only Node on the machine was **v14.16.1**, three majors
+  past EOL, against a project on Next 16.2.0 / React 19.2.4 which requires Node
+  20+. Fixed by installing nvm-windows 1.2.2 and Node **22.23.2** (Node 14 kept
+  alongside, switchable), deleting the macOS `node_modules` and the stale
+  `.next`, and reinstalling from `yarn.lock` on Windows. Recorded in
+  [[tech-stack]].
+
 - **The project is under version control, and it moved off Google Drive to do
   it.** Initialising a repo inside the `G:\My Drive` mount failed: 339 MB of
   objects were written and then every further write returned

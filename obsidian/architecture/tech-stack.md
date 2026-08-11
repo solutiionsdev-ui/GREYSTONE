@@ -101,6 +101,37 @@ yarn lint     # eslint
 
 Package manager: **Yarn** (`yarn.lock` is committed).
 
+### Runtime requirement — Node 20+
+
+Next 16 + React 19 need **Node 20 or newer**; this project is developed on
+**Node 22.23.2**. Node 14 and 16 are end-of-life and cannot run `next dev` at
+all — the failure is not a helpful version warning, it is
+`'next' is not recognized`, because npm never resolves the binary.
+
+Node is managed with **nvm-windows** (`nvm use 22`), so an older system Node can
+stay installed alongside for other projects. `nvm.exe` reads `NVM_HOME` from the
+environment; in a non-interactive shell that variable is often absent and nvm
+fails with `open \settings.txt: The system cannot find the file specified` — set
+`NVM_HOME` and `NVM_SYMLINK` explicitly in that case. After `nvm use`, PATH
+changes reach only newly started processes; already-running terminals and editors
+keep the old Node until restarted.
+
+### `node_modules` is platform-specific — never sync it
+
+`node_modules` must be installed **on the machine that runs it**. A tree
+installed on macOS and carried onto Windows (via Google Drive, a zip, or a
+copied folder) is unusable: it holds `@next/swc-darwin-arm64` instead of
+`@next/swc-win32-x64-msvc`, and `.bin/` contains Unix shims with no `.cmd`
+wrappers, so npm cannot resolve `next`. Delete it and reinstall — patching the
+shims does not help, because the native SWC binary is still the wrong platform.
+Same for `.next/`. Both are gitignored; see [[decisions-log]] ADR-0032.
+
+Install into the **local** working copy on `C:`, never into the Drive mount.
+Beyond the platform problem, a yarn install writes ~23,000 small files, and
+pushing each through Drive's sync layer is slow and burns cloud quota on files
+that are pure build output. The Drive copy is an asset mirror — it does not need
+`node_modules` at all.
+
 The dev server is **pinned to port 3000** — `.claude/launch.json` sets
 `autoPort: false`, so it fails loudly on a busy port rather than silently moving
 to a new one. `http://localhost:3000` is therefore a stable address to keep open
