@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(yarn install *)",
+      "Bash(npm -v)",
+      "Bash(npx --yes yarn@1.22.22 install)",
+      "Bash(ls -lt ~/Downloads 2>/dev/null | head -15; echo \"---DESKTOP---\"; ls -lt ~/Desktop 2>/dev/null | head -15)",
+      "Bash(ls -la \"/private/tmp/claude-501/-Users-mariosaade-Library-CloudStorage-GoogleDrive-solutiions-dev-gmail-com-My-Drive-GREYSTONE/b3642619-ba1e-48f8-84fb-d26b00db55b0/scratchpad\" 2>/dev/null; echo \"---UPLOADS---\"; find /private/tmp/claude-501 -maxdepth 4 -type d -name \"*upload*\" 2>/dev/null | head)",
+      "Bash(find ~/Library/Caches/claude-cli-nodejs ~/.claude /private/tmp/claude-501 -type f \\\\\\( -iname \"*.png\" -o -iname \"*.jpg\" -o -iname \"*.jpeg\" -o -iname \"*.webp\" \\\\\\) -newermt \"2026-08-11\" 2>/dev/null | head -20)",
+      "Bash(find /private/tmp/claude-501 ~/Library/Caches/claude-cli-nodejs ~/.claude ~/Downloads ~/Desktop ~/Pictures -type f \\\\\\( -iname \"*.png\" -o -iname \"*.jpg\" -o -iname \"*.jpeg\" -o -iname \"*.webp\" \\\\\\) -newermt \"-3 hours\" 2>/dev/null | head -20)",
+      "Bash(unzip -l ~/Downloads/aerra.zip)",
+      "Bash(sips -g pixelWidth -g pixelHeight -g hasAlpha ~/Desktop/14.png)",
+      "Bash(cp public/assets/Hero/hero.png __TRACKED_VAR__/hero-original-cutout.png)",
+      "Bash(cp ~/Desktop/14.png public/assets/Hero/hero.png)",
+      "Bash(sips -g pixelWidth -g pixelHeight public/assets/Hero/hero.png)"
+    ]
+  }
+}

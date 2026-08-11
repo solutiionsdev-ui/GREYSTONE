@@ -1,0 +1,279 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   TIER 1 — PRIMITIVES  (`--raw-*`)
+   Raw literal values. The only tier allowed to contain a hex/px/ms literal.
+   Never referenced in markup, never bound into @theme. Rename freely.
+   Grammar: --raw-<category>-<name>[-<shade>]
+   See obsidian/frontend/design-system.md → "Token naming convention".
+
+   Every value below is read from the Figma frame "Concept 3" (1469:1302),
+   laid out at a 1440 px base width. Sizes are stored in rem at 16 px = 1 rem,
+   so they stay proportional under the adaptive grid.
+   --------------------------------------------------------------------------- */
+:root {
+  /* Neutrals — Figma uses pure black/white plus two greys */
+  --raw-color-white: #ffffff;
+  --raw-color-white-85: rgba(255, 255, 255, 0.85); /* contact form panel */
+  --raw-color-white-50: rgba(255, 255, 255, 0.5); /* dimmed display heading */
+  --raw-color-white-0: rgba(255, 255, 255, 0); /* wordmark gradient end */
+  --raw-color-black: #000000;
+  --raw-color-black-50: rgba(0, 0, 0, 0.5); /* card index numerals */
+  --raw-color-black-10: rgba(0, 0, 0, 0.1); /* hairline divider */
+  --raw-color-grey-100: #f4f4f4; /* icon tiles, media placeholder */
+  --raw-color-grey-150-80: rgba(243, 243, 243, 0.8); /* nav bar + glass cards */
+
+  /* Hero sky — Figma "image 643" (1469:1300), a top-to-bottom ramp */
+  --raw-gradient-sky: linear-gradient(
+    to bottom,
+    rgb(26, 80, 109) 0%,
+    rgb(50, 109, 143) 21.154%,
+    rgb(84, 136, 161) 49.529%,
+    rgb(111, 159, 181) 59.513%,
+    rgb(138, 182, 200) 69.496%,
+    rgb(192, 227, 239) 89.464%
+  );
+
+  /* Wordmark fill — Figma "aerra" (1476:1511), white fading out at 82.23% */
+  --raw-gradient-wordmark: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0) 82.23%
+  );
+
+  /* Type scale — 16 / 20 / 36 / 80 / 801.395 px in the Figma frame */
+  --raw-font-size-100: 1rem;
+  --raw-font-size-200: 1.25rem;
+  --raw-font-size-300: 2.25rem;
+  --raw-font-size-400: 5rem;
+  --raw-font-size-500: 50.0872rem;
+
+  --raw-leading-flat: 1; /* display headings */
+  --raw-leading-tight: 1.1; /* clip floor for TextEngine overflow */
+  --raw-leading-normal: 1.2; /* every other text node in the frame */
+
+  /* Corner radii — 6 / 8 / 10 px */
+  --raw-radius-100: 0.375rem;
+  --raw-radius-200: 0.5rem;
+  --raw-radius-300: 0.625rem;
+
+  /* Backdrop blur — 10 px nav and glass cards, 37.5 px contact panel */
+  --raw-blur-100: 0.625rem;
+  --raw-blur-200: 2.34375rem;
+
+  --raw-duration-fast: 150ms;
+  --raw-duration-normal: 250ms;
+  --raw-duration-slow: 700ms;
+}
+
+/* ---------------------------------------------------------------------------
+   TIER 2 — SEMANTIC  (role names, no namespace prefix)
+   Purpose, not appearance. Always `var(--raw-*)` — never a literal.
+   This is the themeable layer: any re-theme overrides HERE, which is why these
+   are separate from the @theme bindings below (see the note there).
+   Grammar: --<role>[-<variant>][-<state>]
+   --------------------------------------------------------------------------- */
+:root {
+  --background: var(--raw-color-white);
+  --foreground: var(--raw-color-black);
+  --foreground-muted: var(--raw-color-black-50);
+
+  --surface-muted: var(--raw-color-grey-100);
+  /* Card face — the same glass recipe as the nav bar, so the two read as one
+     material. Kept as its own role: they are different surfaces that happen to
+     share a look, and either may be re-themed without the other. */
+  --surface-glass: var(--raw-color-grey-150-80);
+  --surface-nav: var(--raw-color-grey-150-80);
+  --surface-panel: var(--raw-color-white-85);
+
+  /* Text sitting on top of a photograph */
+  --on-media: var(--raw-color-white);
+  --on-media-muted: var(--raw-color-white-50);
+
+  --action-primary: var(--raw-color-black);
+  --action-primary-foreground: var(--raw-color-white);
+  --action-secondary: var(--raw-color-white);
+
+  --border-subtle: var(--raw-color-black-10);
+  --border-field: var(--raw-color-black);
+
+  --backdrop-hero: var(--raw-gradient-sky);
+  --wordmark-fill: var(--raw-gradient-wordmark);
+
+  --font-size-body: var(--raw-font-size-100);
+  --font-size-lead: var(--raw-font-size-200);
+  --font-size-title: var(--raw-font-size-300);
+  --font-size-display: var(--raw-font-size-400);
+  --font-size-wordmark: var(--raw-font-size-500);
+
+  --line-height-flat: var(--raw-leading-flat);
+  --line-height-display: var(--raw-leading-tight);
+  --line-height-body: var(--raw-leading-normal);
+
+  --corner-control: var(--raw-radius-100);
+  --corner-button: var(--raw-radius-200);
+  --corner-card: var(--raw-radius-300);
+
+  --backdrop-nav: var(--raw-blur-100);
+  --backdrop-glass: var(--raw-blur-100);
+  --backdrop-panel: var(--raw-blur-200);
+
+  --duration-fast: var(--raw-duration-fast);
+  --duration-normal: var(--raw-duration-normal);
+  /* Long enough for the CTA sheen to read as a sweep rather than a flash. */
+  --duration-slow: var(--raw-duration-slow);
+}
+
+/* ---------------------------------------------------------------------------
+   THEME BINDINGS — map semantic tokens into Tailwind namespaces.
+   Every entry is exactly `--<tw-namespace>-<role>: var(--<role>)`.
+   `inline` is required: it inlines the var() into each utility, so overrides on
+   the Tier 2 tokens above cascade. Binding a literal here instead would freeze
+   the value and break theming.
+
+   Only these namespaces generate utilities (verified against tailwindcss
+   v4.3.3): --color-* --spacing-* --radius-* --leading-* --tracking-* --text-*
+   --font-* --ease-* --breakpoint-* --container-* --shadow-* --blur-* --animate-*
+   NOTE: there is NO --duration-* namespace in v4 — `duration-fast` compiles to
+   nothing. Durations stay Tier 2 only and are used as duration-[var(--duration-fast)].
+   --------------------------------------------------------------------------- */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-surface-muted: var(--surface-muted);
+  --color-surface-glass: var(--surface-glass);
+  --color-surface-nav: var(--surface-nav);
+  --color-surface-panel: var(--surface-panel);
+  --color-on-media: var(--on-media);
+  --color-on-media-muted: var(--on-media-muted);
+  --color-action-primary: var(--action-primary);
+  --color-action-primary-foreground: var(--action-primary-foreground);
+  --color-action-secondary: var(--action-secondary);
+  --color-border-subtle: var(--border-subtle);
+  --color-border-field: var(--border-field);
+
+  --font-sans: var(--font-google-sans-flex);
+  /* Variable cut, for type large enough that optical size matters. */
+  --font-display: var(--font-google-sans-flex-display);
+
+  --text-body: var(--font-size-body);
+  --text-lead: var(--font-size-lead);
+  --text-title: var(--font-size-title);
+  --text-display: var(--font-size-display);
+  --text-wordmark: var(--font-size-wordmark);
+
+  --leading-flat: var(--line-height-flat);
+  /* Leading floor for clipped TextEngine reveals — see
+     obsidian/frontend/text-engine.md → "Alignment & line-height". */
+  --leading-display: var(--line-height-display);
+  --leading-body: var(--line-height-body);
+
+  --radius-control: var(--corner-control);
+  --radius-button: var(--corner-button);
+  --radius-card: var(--corner-card);
+
+  --blur-nav: var(--backdrop-nav);
+  --blur-glass: var(--backdrop-glass);
+  --blur-panel: var(--backdrop-panel);
+
+  --ease-entrance: cubic-bezier(0.2, 0, 0, 1);
+
+  /* Breakpoints exist to name the three designs, so they line up exactly with
+     GRID_BREAKPOINTS in grid.config.ts:
+       (default) phone   < 540
+       tablet:           540 – 1279   — the stacked layout, fixed 16 px root
+       lg:               ≥ 1280       — the Figma 1440 composition
+     `md:` is left at Tailwind's 768 and deliberately unused for layout, so a
+     stray `md:` can never half-apply the desktop composition to a tablet.
+     Media-query rem always resolves against 16 px, never the adaptive root. */
+  --breakpoint-tablet: 33.75rem; /* 540px */
+  --breakpoint-lg: 80rem; /* 1280px — the Figma composition starts here */
+}
+
+@layer base {
+  /* Adaptive scaling grid — scales the root font-size with the viewport so the
+     rem-based layout stays proportional. The breakpoint divides FONT_BASE
+     (16px) by the design base width its range was laid out at:
+       font-size: 16 * 100 / baseWidth  (vw)
+
+     There is a single breakpoint because there is a single design: the whole
+     page is laid out at 1440 and must keep those proportions everywhere, so it
+     scales from 1440 down here and from 1440 up via <AdaptiveGrid coef={1} />.
+     Keep in sync with src/components/common/grid/grid.config.ts. */
+  html {
+    font-size: 16px;
+  }
+
+  @media (max-width: 1440px) {
+    html {
+      font-size: 1.111111vw; /* 16 * 100 / 1440 */
+    }
+  }
+
+  /* The tablet range does **not** scale: a fixed 16 px root with a fluid
+     stacked layout. Scaling it would put one end of a 2.4× width range wrong
+     whichever base was chosen — the 1440 composition at 834 px measured 9.3 px
+     body copy, and a tablet base of 834 ran from 10.7 px to 24.5 px across the
+     same range. See grid.config.ts. */
+  @media (max-width: 1279px) {
+    html {
+      font-size: 16px;
+    }
+  }
+
+  /* Phones re-base to the 430 design they are laid out at. */
+  @media (max-width: 539px) {
+    html {
+      font-size: 3.72093vw; /* 16 * 100 / 430 */
+    }
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+  }
+}
+
+@layer utilities {
+}
+
+/* Figma trims every text box to the cap/alphabetic edges, so its y-positions
+   measure ink, not the line box. Porting the layout 1:1 means reproducing that
+   trim.
+
+   `text-box: trim-both cap alphabetic` would say this directly, but it is
+   Chromium-only and — decisively — has no effect on a flex container, which is
+   exactly what TextEngine renders. So the trim is done geometrically instead,
+   with negative block margins that pull the box onto the ink. Measured from
+   Google Sans Flex (ascent .9625em, descent .2875em, cap height .725em):
+
+     block-start = (line-height − 1.25em) / 2 + .2375em
+     block-end   = (line-height − 1.25em) / 2 + .2875em
+
+   One utility per leading the design uses; pick the one matching the element's
+   `leading-*` class. */
+@utility text-trim-flat {
+  /* pairs with leading-flat (1) */
+  margin-block: -0.1125em -0.1625em;
+}
+
+@utility text-trim-body {
+  /* pairs with leading-body (1.2) */
+  margin-block: -0.2125em -0.2625em;
+}
+
+/* `spring-text-engine` writes `display:flex; flex-wrap:wrap` as an inline style
+   on its container, so only `!important` can unwrap it. The numbers heading is
+   a single nowrap line in Figma (1476:1527).
+
+   Declared as an `@utility`, not a `@layer components` class, because it is
+   applied **responsively** (`md:text-engine-nowrap`) — variants only generate
+   for real utilities, and as a plain class the `md:` form silently produced
+   nothing and the heading wrapped at desktop. */
+@utility text-engine-nowrap {
+  flex-wrap: nowrap !important;
+}
+
+@layer components {
+}

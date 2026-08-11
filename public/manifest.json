@@ -1,0 +1,22 @@
+{
+  "name": "AERRA",
+  "short_name": "AERRA",
+  "description": "A 240 m² house on a south-facing slope, 40 minutes from the city.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a506d",
+  "icons": [
+    {
+      "src": "/icon",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-icon",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
