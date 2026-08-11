@@ -10,6 +10,56 @@ consequences. Use [[templates/adr-note]] for new entries. Newest first.
 
 ---
 
+## ADR-0032 — The repository lives on local disk, never on Google Drive
+
+- **Status:** Accepted
+- **Date:** 2026-08-11
+
+**Context.** The project was authored in place at
+`G:\My Drive\Projects\Development\GREYSTONE` — inside a Google Drive File Stream
+mount. Putting it under version control there failed hard. `git init` and
+`git add` succeeded, writing **339 MB** of loose objects, and then every
+subsequent write returned `No space left on device`: the commit, `git remote add`,
+even a ~300-byte `.git/config`.
+
+The reported free space was fiction. `Get-PSDrive` showed **446 MB free on G:**
+while a 1 MB test write failed with *"There is not enough space on the disk."*
+DriveFS reports a number derived from the cloud quota, but once the Google
+account is at quota the backend rejects writes regardless of what it displays.
+No stale `.lock` files were involved — `.git` was clean.
+
+Two further problems, independent of the quota:
+
+- Drive syncs `.git` **file by file while git is mid-write**. Object stores and
+  packs corrupt under that race; this is a well-known way to lose a repository.
+- Drive was uploading the 339 MB object store to the cloud, so the repo's
+  internals consumed quota a second time on top of the working tree.
+
+**Decision.** The git repository lives on local disk, at
+`C:\Users\User\Desktop\solutiions projects\GREYSTONE`. Google Drive is storage
+for **assets**, not for version control. The Drive copy is no longer the working
+tree; the local copy is canonical.
+
+`core.autocrlf` is set to `false` on the repo so the LF line endings in the
+source are committed and checked out unchanged, rather than being rewritten to
+CRLF on this Windows machine.
+
+**Consequences.** The two copies will diverge the moment either is edited —
+whichever tree is not being committed from is stale, and there is no mechanism
+keeping them in sync. Work happens in the local copy from here on.
+
+`node_modules/` and `.next/` were not copied; both are regenerable
+(`yarn install`, `yarn build`) and neither is tracked.
+
+**Not decided here:** whether the 324 MB of raw generation media under
+`images videos/` belongs in git at all. It is committed for now at the owner's
+explicit instruction. The case against is that git stores every version of a
+binary in full and forever, so the 324 MB is permanent history that cannot be
+removed without rewriting it — and these are raw Kling/Higgsfield outputs, not
+shipped assets, which live in `public/`. Revisit before the history gets long.
+
+---
+
 ## ADR-0031 — Proximity decides when to build, never when to tear down
 
 - **Status:** Accepted

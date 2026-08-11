@@ -10,6 +10,17 @@ This is a human-curated log — not a mirror of `git log`.
 
 ## 2026-08-11
 
+- **The project is under version control, and it moved off Google Drive to do
+  it.** Initialising a repo inside the `G:\My Drive` mount failed: 339 MB of
+  objects were written and then every further write returned
+  `No space left on device`, while the drive reported 446 MB free — DriveFS
+  displays a quota-derived figure that a full Google account will not honour.
+  Drive also syncs `.git` mid-write, which corrupts object stores. The tree now
+  lives at `C:\Users\User\Desktop\solutiions projects\GREYSTONE` with
+  `core.autocrlf=false`, 189 files in the initial commit, `origin` pointing at
+  `solutiionsdev-ui/GREYSTONE`. The Drive copy is stale and no longer canonical.
+  See [[decisions-log]] ADR-0032.
+
 - **The preview launch config no longer depends on a global Yarn.**
   `.claude/launch.json` called `yarn dev`, which fails outright on a machine
   where Yarn was never installed globally — Node ships npm, not Yarn. It now
