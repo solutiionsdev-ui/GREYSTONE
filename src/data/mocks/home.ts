@@ -62,9 +62,9 @@ export const homeContent = {
     caption: ["Finished and ready to live in —", "heat, light and everything in between"],
     image: {
       src: "/assets/Hero/hero.png",
-      alt: "The AERRA house in daylight — timber and stone volumes under low pitched roofs, raised on a dry-stone terrace above a rock garden.",
-      width: 1999,
-      height: 1417,
+      alt: "The AERRA house lit from within at dusk, standing alone on a rocky mountain slope.",
+      width: 2160,
+      height: 2271,
     },
   },
 

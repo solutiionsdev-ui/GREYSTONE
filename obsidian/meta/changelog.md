@@ -1,44 +1,12 @@
 ---
 tags: [meta, changelog]
-updated: 2026-08-11
+updated: 2026-08-09
 ---
 
 # Changelog
 
 Chronological log of notable changes to the project. Newest first.
 This is a human-curated log — not a mirror of `git log`.
-
-## 2026-08-11
-
-- **The Windows toolchain was unusable, twice over.** `next dev` failed with
-  `'next' is not recognized` — two independent causes. First, `node_modules` had
-  been installed on **macOS** and carried onto this Windows machine through
-  Drive: it shipped `@next/swc-darwin-arm64` (no `swc-win32-x64-msvc`) and 19
-  Unix shims in `.bin/` with **zero** `.cmd` wrappers, so npm could never resolve
-  the binary. Second, the only Node on the machine was **v14.16.1**, three majors
-  past EOL, against a project on Next 16.2.0 / React 19.2.4 which requires Node
-  20+. Fixed by installing nvm-windows 1.2.2 and Node **22.23.2** (Node 14 kept
-  alongside, switchable), deleting the macOS `node_modules` and the stale
-  `.next`, and reinstalling from `yarn.lock` on Windows. Recorded in
-  [[tech-stack]].
-
-- **The project is under version control, and it moved off Google Drive to do
-  it.** Initialising a repo inside the `G:\My Drive` mount failed: 339 MB of
-  objects were written and then every further write returned
-  `No space left on device`, while the drive reported 446 MB free — DriveFS
-  displays a quota-derived figure that a full Google account will not honour.
-  Drive also syncs `.git` mid-write, which corrupts object stores. The tree now
-  lives at `C:\Users\User\Desktop\solutiions projects\GREYSTONE` with
-  `core.autocrlf=false`, 189 files in the initial commit, `origin` pointing at
-  `solutiionsdev-ui/GREYSTONE`. The Drive copy is stale and no longer canonical.
-  See [[decisions-log]] ADR-0032.
-
-- **The preview launch config no longer depends on a global Yarn.**
-  `.claude/launch.json` called `yarn dev`, which fails outright on a machine
-  where Yarn was never installed globally — Node ships npm, not Yarn. It now
-  runs `npm run dev`, the same `next dev` script. Yarn stays the package manager
-  of record: `yarn.lock` is untouched, and an install without a global Yarn is
-  `npx yarn@1.22.22 install`. Noted in [[tech-stack]].
 
 ## 2026-08-09 (eleventh pass)
 
