@@ -98,6 +98,15 @@ export const DragSequenceVideo = ({
   const [announced, setAnnounced] = useState(0);
 
   const [setInViewNode, inView] = useDynamicInView({});
+  /**
+   * Fetching is armed a viewport ahead of the section rather than on load.
+   *
+   * The clip is several megabytes and sits well down the page, so preloading it
+   * eagerly made every visitor pay for it whether or not they ever reached it.
+   * A margin of one viewport gives it time to arrive before it is looked at
+   * without competing with the hero for bandwidth.
+   */
+  const [setNearNode, near] = useDynamicInView({ rootMargin: "100% 0px" });
 
   /**
    * Whether the decoder has been woken. See `prime`.
@@ -133,6 +142,14 @@ export const DragSequenceVideo = ({
         primed.current = false;
       });
   }, []);
+
+  // `preload="none"` holds the element empty until this runs, so the load has to
+  // be asked for explicitly once the section is near.
+  useEffect(() => {
+    if (!near) return;
+    const video = videoRef.current;
+    if (video && video.readyState === HTMLMediaElement.HAVE_NOTHING) video.load();
+  }, [near]);
 
   useEffect(() => {
     if (!inView) return;
@@ -393,6 +410,7 @@ export const DragSequenceVideo = ({
       ref={(node) => {
         hostRef.current = node;
         setInViewNode(node);
+        setNearNode(node);
       }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -408,7 +426,7 @@ export const DragSequenceVideo = ({
         src={src}
         muted
         playsInline
-        preload="auto"
+        preload={near ? "auto" : "none"}
         aria-hidden="true"
         tabIndex={-1}
         disablePictureInPicture
