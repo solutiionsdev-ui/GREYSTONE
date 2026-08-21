@@ -99,9 +99,49 @@ export const DragSequenceVideo = ({
 
   const [setInViewNode, inView] = useDynamicInView({});
 
+  /**
+   * Whether the decoder has been woken. See `prime`.
+   */
+  const primed = useRef(false);
+
+  /**
+   * Wake the decoder with a muted, inline play/pause.
+   *
+   * Seeking alone paints a frame on desktop, but not in iOS Safari: there
+   * `preload` is ignored and the decoder is only spun up by playback, so a clip
+   * that is never `play()`ed stays blank however much it is seeked. A muted
+   * `playsInline` clip is allowed to start without a gesture, so starting it and
+   * stopping it on the same tick primes the decoder without the clip visibly
+   * running.
+   *
+   * Autoplay is refused outright in Low Power Mode, so the flag is cleared on
+   * rejection and the first touch tries again — see `handlePointerDown`.
+   */
+  const prime = useCallback((video: HTMLVideoElement) => {
+    if (primed.current) return;
+    primed.current = true;
+    const resume = video.currentTime;
+    const started = video.play();
+    if (!started || typeof started.then !== "function") return;
+    started
+      .then(() => {
+        video.pause();
+        // Playback advances the clip; put it back where the phase expects it.
+        video.currentTime = resume;
+      })
+      .catch(() => {
+        primed.current = false;
+      });
+  }, []);
+
   useEffect(() => {
-    if (inView && !spentRef.current) setPlaying(true);
-  }, [inView]);
+    if (!inView) return;
+    if (!spentRef.current) setPlaying(true);
+    // iOS fetches nothing until playback is asked for, so a clip scrolled into
+    // view has to be woken here as well as on metadata.
+    const video = videoRef.current;
+    if (video) prime(video);
+  }, [inView, prime]);
 
   // Declarative form on purpose: `useSpring` diffs values each render. The
   // imperative `useSpring(fn).api.start` form does not move the values in this
@@ -126,13 +166,17 @@ export const DragSequenceVideo = ({
     [moveTo],
   );
 
-  const adopt = useCallback((video: HTMLVideoElement) => {
-    if (video.readyState < HTMLMediaElement.HAVE_METADATA) return;
-    duration.current = video.duration;
-    // Nudge off zero so the first frame paints without ever calling play().
-    if (video.currentTime === 0) video.currentTime = SEEK_EPSILON;
-    setReady(true);
-  }, []);
+  const adopt = useCallback(
+    (video: HTMLVideoElement) => {
+      if (video.readyState < HTMLMediaElement.HAVE_METADATA) return;
+      duration.current = video.duration;
+      // Nudge off zero so the first frame paints on browsers that decode a seek.
+      if (video.currentTime === 0) video.currentTime = SEEK_EPSILON;
+      prime(video);
+      setReady(true);
+    },
+    [prime],
+  );
 
   // The element is server-rendered, so it can finish loading *before* hydration
   // attaches `onLoadedMetadata` — in which case that event never fires for us.
@@ -233,6 +277,10 @@ export const DragSequenceVideo = ({
   }, []);
 
   const handlePointerDown = (event: React.PointerEvent<HTMLElement>) => {
+    // Runs before the `draggable` guard: when autoplay was refused this touch is
+    // the gesture that is allowed to wake the decoder, and the clip is not yet
+    // draggable precisely because it never woke.
+    if (videoRef.current) prime(videoRef.current);
     if (!draggable) return;
     takeOver();
     pointer.current = { id: event.pointerId, x: event.clientX, time: event.timeStamp, velocity: 0 };
