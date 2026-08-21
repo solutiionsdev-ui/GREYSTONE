@@ -61,10 +61,10 @@ export const homeContent = {
     wordmark: "aerra",
     caption: ["Finished and ready to live in —", "heat, light and everything in between"],
     image: {
-      src: "/assets/Hero/hero.png",
-      alt: "The AERRA house lit from within at dusk, standing alone on a rocky mountain slope.",
-      width: 2160,
-      height: 2271,
+      src: "/assets/Hero/12.png",
+      alt: "The AERRA house in daylight, its glazed facade set into a wooded slope below the mountains.",
+      width: 1999,
+      height: 1417,
     },
   },
 
