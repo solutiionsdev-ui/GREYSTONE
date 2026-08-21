@@ -1,7 +1,7 @@
 // 📖 Docs: obsidian/frontend/components/common.md
 
 /**
- * The AERRA mark — a chevron over an arc. Figma "Union" (1484:1660 at
+ * The GREYSTONE mark — a chevron over an arc. Figma "Union" (1484:1660 at
  * 120 × 129, and 1484:1592 scaled down inside the nav logo tile).
  */
 export interface BrandMarkProps {

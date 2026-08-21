@@ -58,11 +58,11 @@ export const homeContent = {
     subtitle:
       "A 240 m² house on a south-facing slope, 40 minutes from the city. One owner, one view, no neighbours in sight.",
     cta: { label: "Book a viewing", href: "#contact" },
-    wordmark: "aerra",
+    wordmark: "greystone",
     caption: ["Finished and ready to live in —", "heat, light and everything in between"],
     image: {
       src: "/assets/Hero/12.png",
-      alt: "The AERRA house in daylight, its glazed facade set into a wooded slope below the mountains.",
+      alt: "The GREYSTONE house in daylight, its glazed facade set into a wooded slope below the mountains.",
       width: 1999,
       height: 1417,
     },
@@ -70,7 +70,7 @@ export const homeContent = {
 
   about: {
     eyebrow: "About the house",
-    body: "AERA is two floors of cedar and glass, set into the slope. Floor-to-ceiling windows open the living room to the valley, and the terrace runs into the treeline. Everything is done — down to the last socket.",
+    body: "GREYSTONE is two floors of cedar and glass, set into the slope. Floor-to-ceiling windows open the living room to the valley, and the terrace runs into the treeline. Everything is done — down to the last socket.",
     cta: { label: "Book a viewing", href: "#contact" },
     highlights: [
       {
@@ -192,7 +192,7 @@ export const homeContent = {
     mark: {
       // Folder name comes from the design hand-off; the space must stay encoded.
       src: "/assets/Who%20this%20is%20for/model.glb",
-      label: "The AERRA mark, rendered in three dimensions and turning with the page",
+      label: "The GREYSTONE mark, rendered in three dimensions and turning with the page",
     },
   },
 

@@ -51,7 +51,7 @@ export const SiteNav = ({ links, cta }: SiteNavProps) => {
       >
         <Link
           href="/"
-          aria-label="AERRA — home"
+          aria-label="GREYSTONE — home"
           className="flex size-11 shrink-0 items-center justify-center rounded-control bg-action-secondary transition-transform duration-[var(--duration-fast)] ease-entrance hover:scale-105 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-foreground"
         >
           <BrandMark className="w-5 text-foreground" />

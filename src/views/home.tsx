@@ -9,7 +9,7 @@ import { NumbersSection } from "@/views/home/numbers-section";
 import { SiteNav } from "@/views/home/site-nav";
 
 /**
- * Home view — the AERRA landing page, ported from the Figma frame
+ * Home view — the GREYSTONE landing page, ported from the Figma frame
  * "Concept 3" (1469:1302), laid out at a 1440 px base width.
  *
  * Every section keeps its Figma height and places children at their Figma

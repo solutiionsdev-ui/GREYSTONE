@@ -1,6 +1,6 @@
-# Aerra — source template
+# Greystone — source template
 
-This is the complete source for the **Aerra** project, distributed as a GetLayers template.
+This is the complete source for the **Greystone** project, distributed as a GetLayers template.
 It's a Next.js app —
 the full project tree, minus installed dependencies and any local secrets.
 
