@@ -93,7 +93,7 @@ export const homeContent = {
       height: 1025,
     },
     video: {
-      src: "/assets/About/about-video-seedance.mp4",
+      src: "/assets/About/about-video-720.mp4",
       label: "The house in 360 degrees — drag to rotate it",
     },
     /**
