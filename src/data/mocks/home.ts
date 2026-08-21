@@ -208,10 +208,10 @@ export const homeContent = {
     ] satisfies ContactField[],
     submitLabel: "Book a viewing",
     image: {
-      src: "/assets/Contact/contact.png",
-      alt: "Close view of the cedar-clad facade and terrace at dusk.",
-      width: 2160,
-      height: 1689,
+      src: "/assets/Contact/15.png",
+      alt: "The house at dusk, warm light spilling from its windows across the terraced garden.",
+      width: 1999,
+      height: 1417,
     },
   },
 } as const;
